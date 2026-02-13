@@ -21,7 +21,11 @@
       synchronize:
         src: "../"
         dest: "{{ project_path }}"
-        mode: push
+        mode: '0755'
+        rsync_opts:
+          - "--exclude=.git"
+          - "--exclude=.venv"
+          - "--exclude=__pycache__"
     
     - name: 4. Copiando el archivo docker-compose.prod.yml desde Jenkins al servidor
       copy:        
