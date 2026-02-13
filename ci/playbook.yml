@@ -22,19 +22,25 @@
         dest: "{{ project_path }}/"               
         rsync_opts:
           - "--exclude=.git"
-          - "--exclude=.venv"
-          - "--exclude=__pycache__"
+          - "--exclude=.venv"              
     
-    - name: 4. Copiando el archivo docker-compose.prod.yml desde Jenkins al servidor
+    - name: 5. Copiando el archivo docker-compose.prod.yml desde Jenkins al servidor
       ansible.posix.synchronize:        
         src: "{{ compose_file }}" 
-        dest: "{{ project_path }}/ci/docker-compose.prod.yml"        
+        dest: "{{ project_path }}/docker-compose.prod.yml"
 
-    - name: 5. Levantar la infraestructura con Docker Compose
+    - name: 6 Administrando red de Docker
+      community.docker.docker_network:
+        name: cunori2026
+        driver: bridge
+        ipam_config:
+          - subnet: 192.168.100.0/24        
+
+    - name: 7. Levantar la infraestructura con Docker Compose
       community.docker.docker_compose_v2:
         project_src: "{{ project_path }}"
         files:
-          - "ci/docker-compose.prod.yml"
+          - docker-compose.prod.yml
         state: present
         build: always
         pull: always
