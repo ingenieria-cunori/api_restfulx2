@@ -1,0 +1,43 @@
+- name: Despliegue de API RESTx2 en Producción
+  hosts: dell
+  become: false
+  vars:
+    project_path: "/home/student/api_restx2"
+
+  tasks:
+    - name: 1. Creando directorio del proyecto si no existe
+      file:
+        path: "{{ project_path }}"
+        state: directory
+        mode: '0755'
+
+    - name: 2. Copiando archivo .env.prod desde Jenkins al servidor
+      copy:        
+        src: "{{ env_file }}" 
+        dest: "{{ project_path }}/.env.prod"
+        mode: '0600'
+
+    - name: 3. Sincronizando archivos del proyecto
+      synchronize:
+        src: "../"
+        dest: "{{ project_path }}"
+        mode: '0755'
+        rsync_opts:
+          - "--exclude=.git"
+          - "--exclude=.venv"
+          - "--exclude=__pycache__"
+    
+    - name: 4. Copiando el archivo docker-compose.prod.yml desde Jenkins al servidor
+      copy:        
+        src: "{{ compose_file }}" 
+        dest: "{{ project_path }}/ci/docker-compose.prod.yml"
+        mode: '0755'
+
+    - name: 5. Levantar la infraestructura con Docker Compose
+      community.docker.docker_compose_v2:
+        project_src: "{{ project_path }}/ci"
+        files:
+          - docker-compose.prod.yml
+        state: present
+        build: always
+        pull: always
