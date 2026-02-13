@@ -18,8 +18,8 @@
 
     - name: 3. Sincronizando archivos del proyecto
       ansible.posix.synchronize:
-        src: "../"
-        dest: "{{ project_path }}"               
+        src: "{{ repo_dir }}/"
+        dest: "{{ project_path }}/"               
         rsync_opts:
           - "--exclude=.git"
           - "--exclude=.venv"              

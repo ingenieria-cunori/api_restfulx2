@@ -52,6 +52,7 @@ pipeline {
                     credentialsId: env.SSH_KEY_ID,                    
                     extraVars: [
                         env_file: "${ENV_FILE}",
+                        repo_dir: "${WORKSPACE}",
                         compose_file: "${COMPOSE_FILE}",
                         ansible_host: "${TARGET_IP}"
                     ],
