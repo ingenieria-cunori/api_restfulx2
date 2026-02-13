@@ -12,31 +12,29 @@
         mode: '0755'
 
     - name: 2. Copiando archivo .env.prod desde Jenkins al servidor
-      copy:        
+      ansible.posix.synchronize:        
         src: "{{ env_file }}" 
-        dest: "{{ project_path }}/.env.prod"
-        mode: '0600'
+        dest: "{{ project_path }}/.env.prod"        
 
     - name: 3. Sincronizando archivos del proyecto
-      synchronize:
+      ansible.posix.synchronize:
         src: "../"
-        dest: "{{ project_path }}"        
+        dest: "{{ project_path }}/"               
         rsync_opts:
           - "--exclude=.git"
           - "--exclude=.venv"
           - "--exclude=__pycache__"
     
     - name: 4. Copiando el archivo docker-compose.prod.yml desde Jenkins al servidor
-      copy:        
+      ansible.posix.synchronize:        
         src: "{{ compose_file }}" 
-        dest: "{{ project_path }}/ci/docker-compose.prod.yml"
-        mode: '0755'
+        dest: "{{ project_path }}/ci/docker-compose.prod.yml"        
 
     - name: 5. Levantar la infraestructura con Docker Compose
       community.docker.docker_compose_v2:
-        project_src: "{{ project_path }}/ci"
+        project_src: "{{ project_path }}"
         files:
-          - docker-compose.prod.yml
+          - "ci/docker-compose.prod.yml"
         state: present
         build: always
         pull: always
