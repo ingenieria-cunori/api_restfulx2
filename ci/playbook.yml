@@ -21,7 +21,7 @@
       synchronize:
         src: "../"
         dest: "{{ project_path }}"
-        mode: '0755'
+        mode: push
     
     - name: 4. Copiando el archivo docker-compose.prod.yml desde Jenkins al servidor
       copy:        
