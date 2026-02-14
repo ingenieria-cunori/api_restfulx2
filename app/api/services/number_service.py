@@ -3,5 +3,6 @@ class NumberService:
     def convert_to_words(n: int) -> str:        
         unidades = ["cero", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"]
         if 0 <= n <= 9:
+            print(n)
             return unidades[n]
         return "Número fuera de rango (0-9)"
